@@ -8,9 +8,7 @@ class Point : public BaseShape {
 public:
     virtual ~Point();
 
-    virtual void draw() override;
-
-    Point(AssetsReader &reader);
+    Point();
 };
 
 #endif //NDK_POINT_H

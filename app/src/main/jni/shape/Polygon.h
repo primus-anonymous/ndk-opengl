@@ -1,13 +1,8 @@
 #ifndef NDK_POLYGON_H
 #define NDK_POLYGON_H
 
-#include "IShape.h"
 #include "BaseShape.h"
 #include <vector>
-#include <glm/detail/type_mat4x4.hpp>
-#include <shader/Program.h>
-#include <texture/Texture.h>
-#include <texture/AssetsReader.h>
 
 class Polygon : public BaseShape {
 
@@ -15,10 +10,12 @@ public:
 
     virtual ~Polygon();
 
-    virtual void draw() override;
+    Polygon(const std::vector<float> &ver, const std::vector<float> &norm,
+            const std::vector<float> &textCoords, int toDraw);
 
-    Polygon(AssetsReader & reader, const std::vector<float> & ver, const std::vector<float> & norm,
-            const std::vector<float> & textCoords, int toDraw);
+    int getToDraw();
+
+    static Polygon* cubeInstance();
 
 private:
     int toDraw;

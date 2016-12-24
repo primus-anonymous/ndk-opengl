@@ -2,35 +2,29 @@
 #define NDK_BASESHAPE_H
 
 #include <transform/Transform.h>
-#include <shader/Program.h>
 #include <texture/Texture.h>
 #include <string>
-#include <texture/AssetsReader.h>
-#include <light/Light.h>
-#include "IShape.h"
 
-
-class BaseShape : public IShape {
+class BaseShape {
 
 public:
     BaseShape();
 
-    void setView(const glm::tmat4x4<float> &view) override;
-
-    void setProjection(const glm::tmat4x4<float> &projection) override;
-
-    Transform &getTransformation() override;
+    Transform &getTransformation();
 
     void addTexture(Texture *textures);
 
-    void setLight(const Light &l);
-
     virtual ~BaseShape();
 
-protected:
+    std::vector<float> &getVerticies();
 
-    glm::tmat4x4<float> view;
-    glm::tmat4x4<float> projection;
+    std::vector<float> &getNormals();
+
+    std::vector<float> &getTextureCoordinates();
+
+    std::vector<Texture *> &getTextures();
+
+protected:
 
     Transform transform;
 
@@ -38,14 +32,7 @@ protected:
     std::vector<float> normals;
     std::vector<Texture *> textures;
     std::vector<float> uvs;
-    Program *program;
-    Light light;
 
-    void setVerticies(const std::vector<float> &verticies);
-
-    void setNormals(const std::vector<float> &normals);
-
-    void setTextureCoordinates(const std::vector<float> &textureCoordinates);
 };
 
 #endif //NDK_BASESHAPE_H

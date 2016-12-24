@@ -35,10 +35,10 @@ public:
 
         void buildAsTSR();
 
-        Builder(Transform &transform);
+        Builder(Transform *transform);
 
     private:
-        Transform &outer;
+        Transform *outer;
     };
 
     float getTranslationX();

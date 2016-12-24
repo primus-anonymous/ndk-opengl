@@ -27,5 +27,5 @@ public class OpenGlJni {
 
     public native void onSwipeTop();
 
-
+    public native void recycle();
 }

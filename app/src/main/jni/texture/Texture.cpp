@@ -2,7 +2,6 @@
 #include "Texture.h"
 
 void Texture::bind(const Png &png) {
-//создаем OpenGL текстуру
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -32,3 +31,11 @@ Texture::Texture() {
 GLuint Texture::getGlTexture() {
     return texture;
 }
+
+Texture *Texture::boundInstance(const Png &png) {
+    Texture *txt = new Texture();
+    txt->bind(png);
+    return txt;
+}
+
+

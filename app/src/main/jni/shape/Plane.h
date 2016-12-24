@@ -6,11 +6,11 @@
 class Plane : public BaseShape {
 
 public:
-    Plane(AssetsReader &reader, int width, int height);
+    Plane(int width, int height);
 
-    void draw() override ;
 
 private:
     void generateVert(int width, int height);
 };
+
 #endif //NDK_PLANE_H

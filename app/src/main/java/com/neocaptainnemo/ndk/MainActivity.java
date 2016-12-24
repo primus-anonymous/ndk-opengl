@@ -73,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        surfaceView.onDestroy();
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         scaleGestureDetector.onTouchEvent(event);
         swipeGestureDetector.onTouch(v, event);
@@ -97,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         private final GestureDetector gestureDetector;
 
-        public OnSwipeTouchListener(Context ctx) {
+        OnSwipeTouchListener(Context ctx) {
             gestureDetector = new GestureDetector(ctx, new GestureListener());
         }
 
@@ -106,19 +112,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             return gestureDetector.onTouchEvent(event);
         }
 
-        public void onSwipeRight() {
+        void onSwipeRight() {
             openGlJni.onSwipeRight();
         }
 
-        public void onSwipeLeft() {
+        void onSwipeLeft() {
             openGlJni.onSwipeLeft();
         }
 
-        public void onSwipeTop() {
+        void onSwipeTop() {
             openGlJni.onSwipeTop();
         }
 
-        public void onSwipeBottom() {
+        void onSwipeBottom() {
             openGlJni.onSwipeBottom();
         }
 
@@ -177,5 +183,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             setRenderer(new SampleRenderer(context, openGlJni));
         }
 
+        public void onDestroy() {
+            openGlJni.recycle();
+        }
     }
 }
