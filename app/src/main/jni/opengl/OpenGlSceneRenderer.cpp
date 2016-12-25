@@ -2,6 +2,13 @@
 #include <shader/Program.h>
 #include "OpenGlSceneRenderer.h"
 
+const glm::tmat4x4<float> OpenGlSceneRenderer::BIAS = {
+        0.5f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.5f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.5f, 1.0f};
+
+
 void OpenGlSceneRenderer::render(Polygon &polygon) {
 
     Program *program = getPolygonProgram();
@@ -30,35 +37,24 @@ void OpenGlSceneRenderer::render(Polygon &polygon) {
                                                           polygon.getTextureCoordinates());
 
 
-    program->assignUniform("uxPixelOffset", (float) (1.0 / shadowMap->getWidth()));
-    program->assignUniform("uyPixelOffset", (float) (1.0 / shadowMap->getHeight()));
-
-    glm::tmat4x4<float> bias = {
-            0.5f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.5f, 0.0f,
-            0.5f, 0.5f, 0.5f, 1.0f};
+    program->assignUniform("xPixelOffset", (float) (1.0 / shadowMap->getWidth()));
+    program->assignUniform("yPixelOffset", (float) (1.0 / shadowMap->getHeight()));
 
 
-    program->assignUniform("uShadowProjMatrix",
-                           bias * shadowMapMvp * polygon.getTransformation().modelMatrix());
+    program->assignUniform("shadowMdelViewProjection",
+                           BIAS * shadowMapMvp * polygon.getTransformation().modelMatrix());
 
-    glUniform1i(program->getUniformShaderParam("uShadowTexture"), 1);
+    program->assignUniform("shadowTexture", 1);
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, shadowMap->getTexture());
-
+    shadowMap->getTexture().bindToUnit(GL_TEXTURE1);
 
     std::vector<Texture *> textures = polygon.getTextures();
 
     for (int i = 0; i < textures.size(); i++) {
 
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, textures[i]->getGlTexture());
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        textures[i]->bindToUnit(GL_TEXTURE0);
 
-        glUniform1i(program->getUniformShaderParam("texture"), 0);
+        program->assignUniform("texture", 0);
 
         glDrawArrays(GL_TRIANGLES, (polygon.getToDraw() / textures.size()) * i,
                      polygon.getToDraw() / textures.size());
@@ -113,29 +109,18 @@ void OpenGlSceneRenderer::render(Plane &plane) {
     auto txt = program->assignAttributLocationShaderParam("textCoord", 2,
                                                           plane.getTextureCoordinates());
 
-    program->assignUniform("uxPixelOffset", (float) (1.0 / shadowMap->getWidth()));
-    program->assignUniform("uyPixelOffset", (float) (1.0 / shadowMap->getHeight()));
+    program->assignUniform("xPixelOffset", (float) (1.0 / shadowMap->getWidth()));
+    program->assignUniform("yPixelOffset", (float) (1.0 / shadowMap->getHeight()));
 
-    glm::tmat4x4<float> bias(
-            0.5f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.5f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.5f, 0.0f,
-            0.5f, 0.5f, 0.5f, 1.0f);
+    program->assignUniform("shadowMdelViewProjection",
+                           BIAS * shadowMapMvp * plane.getTransformation().modelMatrix());
 
+    program->assignUniform("texture", 0);
+    program->assignUniform("shadowTexture", 1);
 
-    program->assignUniform("uShadowProjMatrix",
-                           bias * shadowMapMvp * plane.getTransformation().modelMatrix());
+    plane.getTextures().front()->bindToUnit(GL_TEXTURE0);
 
-    glUniform1i(program->getUniformShaderParam("texture"), 0);
-    glUniform1i(program->getUniformShaderParam("uShadowTexture"), 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    // Bind the texture to this unit.
-    glBindTexture(GL_TEXTURE_2D, plane.getTextures()[0]->getGlTexture());
-    // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, shadowMap->getTexture());
+    shadowMap->getTexture().bindToUnit(GL_TEXTURE1);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, plane.getVerticies().size() / 3);
 
@@ -209,7 +194,7 @@ void OpenGlSceneRenderer::setShadowMap(ShadowMap *shadowMap) {
     this->shadowMap = shadowMap;
 }
 
-void OpenGlSceneRenderer::setShadowMapMvp(const glm::tmat4x4<float> &shadowMapMVp) {
+void OpenGlSceneRenderer::setShadowMapProjectionView(const glm::tmat4x4<float> &shadowMapMVp) {
     this->shadowMapMvp = shadowMapMVp;
 }
 

@@ -6,7 +6,6 @@
 #include <string>
 #include "Png.h"
 
-//подключаем заголовки
 extern "C" {
 #include "png.h"
 #include <setjmp.h>

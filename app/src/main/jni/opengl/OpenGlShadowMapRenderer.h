@@ -25,7 +25,7 @@ public:
 
     virtual void render(Point &point) override;
 
-    glm::tmat4x4<float> getMVP();
+    glm::tmat4x4<float> getProjectionView();
 
 private:
 
@@ -35,6 +35,7 @@ private:
     glm::tmat4x4<float> projection;
     glm::tmat4x4<float> shadowMapView;
 
+    void renderBaseShape(BaseShape &shape, GLenum type, int count) const;
 };
 
 

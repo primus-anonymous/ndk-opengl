@@ -1,20 +1,16 @@
-varying vec2 fragTextCoord;
-uniform sampler2D texture;
-
-varying vec3 fragVert;
-varying vec3 fragNormal;
 uniform vec3 lighPos;
 uniform float ambient;
 uniform float specularExp;
+uniform sampler2D texture;
 
-// This define the value to move one pixel left or right
-uniform float uxPixelOffset;
-// This define the value to move one pixel up or down
-uniform float uyPixelOffset;
+uniform float xPixelOffset;
+uniform float yPixelOffset;
+uniform sampler2D shadowTexture;
 
-// shadow coordinates
-varying vec4 vShadowCoord;
-uniform sampler2D uShadowTexture;
+varying vec4 fragShadowVert;
+varying vec2 fragTextCoord;
+varying vec3 fragVert;
+varying vec3 fragNormal;
 
 //Calculate variable bias - from http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping
 float calcBias()
@@ -40,10 +36,10 @@ float calcBias()
 
 float lookup( vec2 offSet)
 {
-	vec4 shadowMapPosition = vShadowCoord / vShadowCoord.w;
+	vec4 shadowMapPosition = fragShadowVert / fragShadowVert.w;
 
-	float distanceFromLight = texture2D(uShadowTexture, (shadowMapPosition +
-	                               vec4(offSet.x * uxPixelOffset, offSet.y * uyPixelOffset, 0.05, 0.0)).st ).z;
+	float distanceFromLight = texture2D(shadowTexture, (shadowMapPosition +
+	                               vec4(offSet.x * xPixelOffset, offSet.y * yPixelOffset, 0.05, 0.0)).st ).z;
 
 	//add bias to reduce shadow acne (error margin)
 	float bias = calcBias();
@@ -86,7 +82,7 @@ void main() {
     float shadow = 0.0;
 
     	//if the fragment is not behind light view frustum
-    if (vShadowCoord.w > 0.0) {
+    if (fragShadowVert.w > 0.0) {
 
     shadow = shadowPCF();
 

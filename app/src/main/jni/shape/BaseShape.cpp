@@ -1,4 +1,3 @@
-#include <glm/gtc/matrix_transform.hpp>
 #include "BaseShape.h"
 
 
@@ -35,6 +34,12 @@ std::vector<float> &BaseShape::getTextureCoordinates() {
 std::vector<Texture *> &BaseShape::getTextures() {
     return textures;
 }
+
+void BaseShape::addTexture(std::vector<Texture *> textures) {
+    this->textures.insert(std::end(this->textures), std::begin(textures), std::end(textures));
+}
+
+
 
 
 

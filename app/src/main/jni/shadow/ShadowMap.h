@@ -3,8 +3,7 @@
 
 
 #include <GLES2/gl2.h>
-#include <shader/Program.h>
-#include <texture/AssetsReader.h>
+#include <texture/Texture.h>
 
 class ShadowMap {
 public:
@@ -17,7 +16,9 @@ public:
 
     int getHeight();
 
-    GLuint getTexture();
+    Texture& getTexture();
+
+    virtual ~ShadowMap();
 
 private:
 
@@ -26,8 +27,7 @@ private:
     int shadowMapWidth;
     int shadowMapHeight;
     GLuint fboId;
-    GLuint renderTextureId;
-
+    Texture texture;
 
 };
 

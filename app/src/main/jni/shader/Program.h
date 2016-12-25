@@ -32,13 +32,10 @@ public:
 
     void assignUniform(char const *name, float val);
 
-    GLuint assignAttributLocationShaderParam(char const *name, int size, std::vector<float> &values);
+    void assignUniform(char const *name, int val);
 
-    GLint getUniformShaderParam(char const * name);
-
-    GLuint  getAttributePosition(char const * name);
-
-    GLuint getProgram();
+    GLuint assignAttributLocationShaderParam(char const *name, int size,
+                                             std::vector<float> &values);
 
 private:
     GLuint program;

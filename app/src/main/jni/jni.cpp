@@ -1,8 +1,4 @@
 #include <jni.h>
-#include <shape/Polygon.h>
-#include <shape/Point.h>
-#include <shape/Plane.h>
-#include <opengl/OpenGlSceneRenderer.h>
 #include "MainRenderer.h"
 
 
@@ -11,8 +7,6 @@ extern "C" {
 
 MainRenderer *mainRenderer;
 
-
-float step = 0.3f;
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSurfaceChanged(JNIEnv *env, jobject instance,
@@ -38,32 +32,38 @@ Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSurfaceCreated(JNIEnv *env, job
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSwipeLeft(JNIEnv *env, jobject instance) {
-    mainRenderer->getCamera().setViewAtX(mainRenderer->getCamera().getViewAtX() + step);
+
+    mainRenderer->onSwipedLeft();
 }
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSwipeRight(JNIEnv *env, jobject instance) {
-    mainRenderer->getCamera().setViewAtX(mainRenderer->getCamera().getViewAtX() - step);
+
+    mainRenderer->onSwipedRight();
 }
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSwipeBottom(JNIEnv *env, jobject instance) {
-    mainRenderer->getCamera().setViewAtY(mainRenderer->getCamera().getViewAtY() + step);
+
+    mainRenderer->onSwipedBottom();
 }
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSwipeTop(JNIEnv *env, jobject instance) {
-    mainRenderer->getCamera().setViewAtY(mainRenderer->getCamera().getViewAtY() - step);
+
+    mainRenderer->onSwipedTop();
 }
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onZoomIn(JNIEnv *env, jobject instance) {
-    mainRenderer->getCamera().setViewAtZ(mainRenderer->getCamera().getViewAtZ() - step);
+
+    mainRenderer->onZoomedIn();
 }
 
 JNIEXPORT void JNICALL
 Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onZoomOut(JNIEnv *env, jobject instance) {
-    mainRenderer->getCamera().setViewAtZ(mainRenderer->getCamera().getViewAtZ() + step);
+
+    mainRenderer->onZoomedOut();
 }
 
 JNIEXPORT void JNICALL

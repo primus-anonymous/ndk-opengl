@@ -35,38 +35,31 @@ void OpenGlShadowMapRenderer::setLight(const Light &l) {
 }
 
 void OpenGlShadowMapRenderer::render(Polygon &polygon) {
+    renderBaseShape(polygon, GL_TRIANGLES, polygon.getToDraw());
+}
 
+void OpenGlShadowMapRenderer::renderBaseShape(BaseShape &shape, GLenum type, int count) const {
     program->use();
-    auto position = program->assignAttributLocationShaderParam("aShadowPosition", 3, polygon.getVerticies());
+    auto position = program->assignAttributLocationShaderParam("vert", 3, shape.getVerticies());
 
-    auto model = polygon.getTransformation().modelMatrix();
+    auto model = shape.getTransformation().modelMatrix();
     auto modelViewProjection = projection * shadowMapView * model;
 
-    program->assignUniform("uMVPMatrix", modelViewProjection);
+    program->assignUniform("modelViewProjection", modelViewProjection);
 
-    glDrawArrays(GL_TRIANGLES, 0, polygon.getToDraw());
+    glDrawArrays(type, 0, count);
     glDisableVertexAttribArray(position);
 }
 
 void OpenGlShadowMapRenderer::render(Plane &plane) {
-    program->use();
-    auto position = program->assignAttributLocationShaderParam("aShadowPosition", 3, plane.getVerticies());
-
-    auto model = plane.getTransformation().modelMatrix();
-    auto modelViewProjection = projection * shadowMapView * model;
-
-    program->assignUniform("uMVPMatrix", modelViewProjection);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, plane.getVerticies().size() / 3);
-    glDisableVertexAttribArray(position);
-
+    renderBaseShape(plane, GL_TRIANGLE_STRIP, plane.getVerticies().size() / 3);
 }
 
 void OpenGlShadowMapRenderer::render(Point &point) {
     //do not render points
 }
 
-glm::tmat4x4<float> OpenGlShadowMapRenderer::getMVP() {
+glm::tmat4x4<float> OpenGlShadowMapRenderer::getProjectionView() {
     return projection * shadowMapView;
 }
 

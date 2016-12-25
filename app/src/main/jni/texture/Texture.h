@@ -1,4 +1,3 @@
-
 #ifndef NDK_TEXTURE_H
 #define NDK_TEXTURE_H
 
@@ -9,11 +8,16 @@ class Texture {
 
 public:
     Texture();
-    void bind(const Png & png);
-    virtual ~Texture();
+
+    void from(const Png &png);
+
+    void bindToUnit(GLenum unit);
+
     GLuint getGlTexture();
 
-    static Texture * boundInstance(const Png &png);
+    static Texture *instance(const Png &png);
+
+    virtual ~Texture();
 
 private:
     GLuint texture;

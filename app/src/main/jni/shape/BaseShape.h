@@ -14,6 +14,8 @@ public:
 
     void addTexture(Texture *textures);
 
+    void addTexture(std::vector<Texture*> textures);
+
     virtual ~BaseShape();
 
     std::vector<float> &getVerticies();

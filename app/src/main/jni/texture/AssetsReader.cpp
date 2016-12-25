@@ -1,5 +1,4 @@
 #include "AssetsReader.h"
-#include <vector>
 
 AssetsReader::AssetsReader(AAssetManager *mgr) {
     this->mgr = mgr;

@@ -1,15 +1,12 @@
 #ifndef NDK_ENGINE_H
 #define NDK_ENGINE_H
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <GLES2/gl2.h>
-#include <android/asset_manager.h>
 #include <camera/Camera.h>
 #include <shadow/ShadowMap.h>
 #include <opengl/IRenderer.h>
 #include <opengl/OpenGlShadowMapRenderer.h>
-#include "shader/Program.h"
+#include <opengl/OpenGlSceneRenderer.h>
 #include <map>
 
 class MainRenderer {
@@ -23,7 +20,17 @@ public:
 
     ~MainRenderer();
 
-    Camera &getCamera();
+    void onSwipedLeft();
+
+    void onSwipedRight();
+
+    void onSwipedBottom();
+
+    void onSwipedTop();
+
+    void onZoomedIn();
+
+    void onZoomedOut();
 
 private:
 
@@ -33,17 +40,19 @@ private:
 
     std::map<std::string, BaseShape *> shapes;
 
-    Light pointLight;
-
-    std::vector<Texture *> buildDiceTextures();
-
-    void setTextures(Polygon *cube, const std::vector<Texture *> textures);
+    Light light;
 
     Camera camera;
 
     int width;
 
     int height;
+
+    float cameraStep = 0.3f;
+
+    float lightXStep = 0.f;
+
+    float lightXStepSign = 1.0f;
 
     ShadowMap *shadowMap = nullptr;
 

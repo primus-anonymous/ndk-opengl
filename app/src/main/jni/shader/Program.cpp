@@ -44,7 +44,7 @@ void Program::assignUniform(char const *name, glm::tvec4<float> tvec4) {
 }
 
 GLuint Program::assignAttributLocationShaderParam(char const *name, int size,
-                                                std::vector<float> &values) {
+                                                  std::vector<float> &values) {
 
     GLuint gvPositionHandle = glGetAttribLocation(program, name);
     glVertexAttribPointer(gvPositionHandle, size, GL_FLOAT, GL_FALSE, 0,
@@ -55,22 +55,11 @@ GLuint Program::assignAttributLocationShaderParam(char const *name, int size,
     return gvPositionHandle;
 }
 
-GLint Program::getUniformShaderParam(char const *name) {
-    return glGetUniformLocation(program, name);;
-}
 
 void Program::assignUniform(char const *name, glm::tvec3<float> tvec3) {
     GLint gvMvpHandler = glGetUniformLocation(program, name);
     glUniform3f(gvMvpHandler, tvec3[0], tvec3[1], tvec3[2]);
 
-}
-
-GLuint Program::getAttributePosition(char const *name) {
-    return glGetAttribLocation(program, name);
-}
-
-GLuint Program::getProgram() {
-    return this->program;
 }
 
 void Program::assignUniform(char const *name, glm::tmat3x3<float> tmat3x3) {
@@ -82,5 +71,12 @@ void Program::assignUniform(char const *name, float val) {
     GLint gvMvpHandler = glGetUniformLocation(program, name);
     glUniform1f(gvMvpHandler, val);
 }
+
+void Program::assignUniform(char const *name, int val) {
+    GLint gvMvpHandler = glGetUniformLocation(program, name);
+    glUniform1i(gvMvpHandler, val);
+}
+
+
 
 

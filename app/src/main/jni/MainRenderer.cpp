@@ -15,14 +15,10 @@ MainRenderer::MainRenderer(AssetsReader &read) : reader(read) {
     sceneRenderer = new OpenGlSceneRenderer(reader);
     shadowMapRenderer = new OpenGlShadowMapRenderer(reader);
 
-    pointLight.setAmbientComponent(0.2f);
-    pointLight.setSpecularExp(1.5f);
-    pointLight.setX(-5.0f);
-    pointLight.setY(9.0f);
-    pointLight.setZ(.0f);
-
-    sceneRenderer->setLight(pointLight);
-    shadowMapRenderer->setLight(pointLight);
+    light.setAmbientComponent(0.2f);
+    light.setSpecularExp(1.5f);
+    light.setY(9.0f);
+    light.setZ(.0f);
 
     Polygon *dice1 = Polygon::cubeInstance();
 
@@ -34,49 +30,34 @@ MainRenderer::MainRenderer(AssetsReader &read) : reader(read) {
     dice3->getTransformation().builder()
             .translationX(2.f).translationY(-2.f).translationZ(-1.0f).buildAsSRT();
 
+    std::vector<Texture *> diceTextures;
 
-    auto diceTextures = buildDiceTextures();
+    diceTextures.push_back(Texture::instance(reader.readPng("dice1.png")));
+    diceTextures.push_back(Texture::instance(reader.readPng("dice2.png")));
+    diceTextures.push_back(Texture::instance(reader.readPng("dice3.png")));
+    diceTextures.push_back(Texture::instance(reader.readPng("dice4.png")));
+    diceTextures.push_back(Texture::instance(reader.readPng("dice5.png")));
+    diceTextures.push_back(Texture::instance(reader.readPng("dice6.png")));
 
-    setTextures(dice1, diceTextures);
-    setTextures(dice2, diceTextures);
-    setTextures(dice3, diceTextures);
-
-    Point *point = new Point();
-    point->getTransformation().builder().translationX(pointLight.getX()).translationY(
-                    pointLight.getY())
-            .translationZ(pointLight.getZ()).buildAsSRT();
+    dice1->addTexture(diceTextures);
+    dice2->addTexture(diceTextures);
+    dice3->addTexture(diceTextures);
 
     Plane *plane = new Plane(24, 12);
     plane->getTransformation().builder().translationY(-3.0f).buildAsSRT();
 
-    plane->addTexture(Texture::boundInstance(reader.readPng("poker_table.png")));
+    plane->addTexture(Texture::instance(reader.readPng("poker_table.png")));
 
     shapes[DICE_1] = dice1;
     shapes[DICE_2] = dice2;
     shapes[DICE_3] = dice3;
 
     shapes[PLANE] = plane;
-    shapes[POINT] = point;
+    shapes[POINT] = new Point();
+
+    camera.setViewAtY(6.f);
 }
 
-
-void MainRenderer::setTextures(Polygon *cube, const std::vector<Texture *> textures) {
-    for (auto texture : textures) {
-        cube->addTexture(texture);
-    }
-}
-
-std::vector<Texture *> MainRenderer::buildDiceTextures() {
-    std::vector<Texture *> diceTextures;
-
-    diceTextures.push_back(Texture::boundInstance(reader.readPng("dice1.png")));
-    diceTextures.push_back(Texture::boundInstance(reader.readPng("dice2.png")));
-    diceTextures.push_back(Texture::boundInstance(reader.readPng("dice3.png")));
-    diceTextures.push_back(Texture::boundInstance(reader.readPng("dice4.png")));
-    diceTextures.push_back(Texture::boundInstance(reader.readPng("dice5.png")));
-    diceTextures.push_back(Texture::boundInstance(reader.readPng("dice6.png")));
-    return diceTextures;
-}
 
 
 void MainRenderer::onViewChanged(int width, int height) {
@@ -120,6 +101,23 @@ void MainRenderer::onRender() {
 
     shapes[DICE_3]->getTransformation().builder().rotationX(rotation).buildAsSRT();
 
+    lightXStep += lightXStepSign * 0.02f;
+
+    if (lightXStep > 2.0f) {
+        lightXStepSign = -1.0f;
+    }
+
+    if (lightXStep < -4.0f) {
+        lightXStepSign = 1.0f;
+    }
+
+    light.setX(lightXStep);
+    sceneRenderer->setLight(light);
+    shadowMapRenderer->setLight(light);
+    shapes[POINT]->getTransformation().builder().translationX(light.getX()).translationY(
+                    light.getY())
+            .translationZ(light.getZ()).buildAsSRT();
+
     glCullFace(GL_FRONT);
     glBindFramebuffer(GL_FRAMEBUFFER, shadowMap->getFbo());
 
@@ -154,7 +152,7 @@ void MainRenderer::onRender() {
     sceneRenderer->setProjection(sceneProjection);
     sceneRenderer->setView(camera.getMatrix());
     sceneRenderer->setShadowMap(shadowMap);
-    sceneRenderer->setShadowMapMvp(shadowMapRenderer->getMVP());
+    sceneRenderer->setShadowMapProjectionView(shadowMapRenderer->getProjectionView());
 
     for (auto iterator = shapes.begin(); iterator != shapes.end(); iterator++) {
 
@@ -188,10 +186,41 @@ MainRenderer::~MainRenderer() {
     delete shadowMapRenderer;
 }
 
-
-Camera &MainRenderer::getCamera() {
-    return camera;
+void MainRenderer::onSwipedLeft() {
+    camera.setViewAtX(camera.getViewAtX() + cameraStep);
 }
+
+void MainRenderer::onSwipedRight() {
+    camera.setViewAtX(camera.getViewAtX() - cameraStep);
+}
+
+void MainRenderer::onSwipedBottom() {
+    camera.setViewAtY(camera.getViewAtY() + cameraStep);
+}
+
+void MainRenderer::onSwipedTop() {
+    camera.setViewAtY(camera.getViewAtY() - cameraStep);
+}
+
+void MainRenderer::onZoomedIn() {
+    camera.setViewAtZ(camera.getViewAtZ() - cameraStep);
+}
+
+void MainRenderer::onZoomedOut() {
+    camera.setViewAtZ(camera.getViewAtZ() + cameraStep);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

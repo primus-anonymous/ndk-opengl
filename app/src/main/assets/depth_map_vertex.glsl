@@ -1,15 +1,11 @@
-// Vertex shader to generate the Depth Map
-// Used for shadow mapping - generates depth map from the light's viewpoint
 precision highp float;
 
-// model-view projection matrix
-uniform mat4 uMVPMatrix;
+uniform mat4 modelViewProjection;
 
-// position of the vertices
-attribute vec4 aShadowPosition;
+attribute vec4 vert;
 
 
 void main() {
 
-	gl_Position = uMVPMatrix * aShadowPosition;
+	gl_Position = modelViewProjection * vert;
 }

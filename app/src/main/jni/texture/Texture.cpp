@@ -1,9 +1,7 @@
 #include <GLES2/gl2.h>
 #include "Texture.h"
 
-void Texture::bind(const Png &png) {
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+void Texture::from(const Png &png) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -20,22 +18,35 @@ void Texture::bind(const Png &png) {
 }
 
 Texture::~Texture() {
-
-
+    glDeleteTextures(1, &texture);
 }
 
 Texture::Texture() {
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+}
 
+
+Texture *Texture::instance(const Png &png) {
+    Texture *txt = new Texture();
+    txt->from(png);
+    return txt;
+}
+
+void Texture::bindToUnit(GLenum unit) {
+    glActiveTexture(unit);
+    glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 GLuint Texture::getGlTexture() {
     return texture;
 }
 
-Texture *Texture::boundInstance(const Png &png) {
-    Texture *txt = new Texture();
-    txt->bind(png);
-    return txt;
-}
+
+
+
+
+
+
 
 

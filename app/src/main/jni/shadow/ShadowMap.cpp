@@ -11,10 +11,6 @@ void ShadowMap::generateFbo() {
     // create render buffer and bind 16-bit depth buffer
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, shadowMapWidth, shadowMapHeight);
 
-    // Try to use a texture depth component
-    glGenTextures(1, &renderTextureId);
-    glBindTexture(GL_TEXTURE_2D, renderTextureId);
-
     // GL_LINEAR does not make sense for depth texture. However, next tutorial shows usage of GL_LINEAR and PCF. Using GL_NEAREST
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -31,7 +27,8 @@ void ShadowMap::generateFbo() {
                  nullptr);
 
     // Attach the depth texture to FBO depth attachment point
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, renderTextureId, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+                           texture.getGlTexture(), 0);
 
 
     // check FBO status
@@ -61,9 +58,20 @@ int ShadowMap::getHeight() {
     return shadowMapHeight;
 }
 
-GLuint ShadowMap::getTexture() {
-    return renderTextureId;
+Texture &ShadowMap::getTexture() {
+    return texture;
 }
+
+ShadowMap::~ShadowMap() {
+
+    glDeleteBuffers(1, &fboId);
+}
+
+
+
+
+
+
 
 
 

@@ -28,7 +28,7 @@ public:
 
     void setShadowMap(ShadowMap * shadowMap);
 
-    void setShadowMapMvp(const glm::tmat4x4<float> & shadowMapMVp);
+    void setShadowMapProjectionView(const glm::tmat4x4<float> &shadowMapMVp);
 
     virtual ~OpenGlSceneRenderer();
 
@@ -48,6 +48,9 @@ private:
     Program *getPolygonProgram();
 
     Program *getPointProgram();
+
+    static const glm::tmat4x4<float> BIAS;
+
 };
 
 

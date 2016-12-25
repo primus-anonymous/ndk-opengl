@@ -3,7 +3,6 @@
 
 #include <vector>
 
-//подключаем заголовки
 extern "C" {
 #include <png/png.h>
 #include <setjmp.h>
