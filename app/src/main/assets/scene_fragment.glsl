@@ -12,27 +12,6 @@ varying vec2 fragTextCoord;
 varying vec3 fragVert;
 varying vec3 fragNormal;
 
-//Calculate variable bias - from http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping
-float calcBias()
-{
-	float bias;
-
-	vec3 n = normalize( fragNormal );
-	// Direction of the light (from the fragment to the light)
-	vec3 l = normalize( lighPos );
-
-	// Cosine of the angle between the normal and the light direction,
-	// clamped above 0
-	//  - light is at the vertical of the triangle -> 1
-	//  - light is perpendiular to the triangle -> 0
-	//  - light is behind the triangle -> 0
-	float cosTheta = clamp( dot( n,l ), 0.0, 1.0 );
-
- 	bias = 0.0001*tan(acos(cosTheta));
-	bias = clamp(bias, 0.0, 0.01);
-
- 	return bias;
-}
 
 float lookup( vec2 offSet)
 {
@@ -41,8 +20,7 @@ float lookup( vec2 offSet)
 	float distanceFromLight = texture2D(shadowTexture, (shadowMapPosition +
 	                               vec4(offSet.x * xPixelOffset, offSet.y * yPixelOffset, 0.05, 0.0)).st ).z;
 
-	//add bias to reduce shadow acne (error margin)
-	float bias = calcBias();
+	float bias = 0.004;
 
 	return float(distanceFromLight > shadowMapPosition.z - bias);
 }
@@ -86,11 +64,9 @@ void main() {
 
     shadow = shadowPCF();
 
-    		//scale 0.0-1.0 to 0.2-1.0
-    		//otherways everything in shadow would be black
+    //scale 0.0-1.0 to 0.2-1.0
     shadow = (shadow * 0.8) + 0.2;
     }
-
 
     gl_FragColor =  brightness * (texture2D(texture, fragTextCoord)) * shadow;
 }

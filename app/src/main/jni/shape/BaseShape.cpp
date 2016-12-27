@@ -15,7 +15,7 @@ void BaseShape::addTexture(Texture *textures) {
     this->textures.push_back(textures);
 }
 
-BaseShape::BaseShape() {
+BaseShape::BaseShape(std::string k) : key(k) {
 
 }
 
@@ -38,6 +38,12 @@ std::vector<Texture *> &BaseShape::getTextures() {
 void BaseShape::addTexture(std::vector<Texture *> textures) {
     this->textures.insert(std::end(this->textures), std::begin(textures), std::end(textures));
 }
+
+std::string BaseShape::getKey() {
+    return key;
+}
+
+
 
 
 

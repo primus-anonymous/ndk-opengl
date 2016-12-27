@@ -40,15 +40,19 @@ void OpenGlShadowMapRenderer::render(Polygon &polygon) {
 
 void OpenGlShadowMapRenderer::renderBaseShape(BaseShape &shape, GLenum type, int count) const {
     program->use();
-    auto position = program->assignAttributLocationShaderParam("vert", 3, shape.getVerticies());
+    auto position = program->assignAttribute(shape.getKey(), "vert", 3,
+                                             shape.getVerticies());
 
     auto model = shape.getTransformation().modelMatrix();
     auto modelViewProjection = projection * shadowMapView * model;
 
     program->assignUniform("modelViewProjection", modelViewProjection);
 
+    position.enable();
+
     glDrawArrays(type, 0, count);
-    glDisableVertexAttribArray(position);
+
+    position.disable();
 }
 
 void OpenGlShadowMapRenderer::render(Plane &plane) {

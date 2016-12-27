@@ -8,13 +8,15 @@
 class BaseShape {
 
 public:
-    BaseShape();
+    BaseShape(std::string k);
 
     Transform &getTransformation();
 
     void addTexture(Texture *textures);
 
     void addTexture(std::vector<Texture*> textures);
+
+    std::string getKey();
 
     virtual ~BaseShape();
 
@@ -34,6 +36,8 @@ protected:
     std::vector<float> normals;
     std::vector<Texture *> textures;
     std::vector<float> uvs;
+
+    std::string key;
 
 };
 

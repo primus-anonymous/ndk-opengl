@@ -1,6 +1,6 @@
 #include "Plane.h"
 
-Plane::Plane(int width, int height) {
+Plane::Plane(int width, int height) : BaseShape("plane") {
 
     generateVert(width, height);
 

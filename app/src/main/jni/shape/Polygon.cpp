@@ -3,7 +3,7 @@
 
 Polygon::Polygon(const std::vector<float> &ver,
                  const std::vector<float> &norm, const std::vector<float> &textCoords, int toDraw)
-        : toDraw(toDraw) {
+        : BaseShape("polygon"), toDraw(toDraw) {
     verticies = ver;
     normals = norm;
     uvs = textCoords;

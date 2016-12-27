@@ -14,8 +14,10 @@ void OpenGlSceneRenderer::render(Polygon &polygon) {
     Program *program = getPolygonProgram();
     program->use();
 
-    auto position = program->assignAttributLocationShaderParam("vert", 3, polygon.getVerticies());
-    auto norm = program->assignAttributLocationShaderParam("vertNormal", 3, polygon.getNormals());
+    auto position = program->assignAttribute(polygon.getKey(), "vert", 3,
+                                             polygon.getVerticies());
+    auto norm = program->assignAttribute(polygon.getKey(), "vertNormal", 3,
+                                         polygon.getNormals());
 
     auto model = polygon.getTransformation().modelMatrix();
 
@@ -33,8 +35,8 @@ void OpenGlSceneRenderer::render(Polygon &polygon) {
     program->assignUniform("ambient", light.getAmbientComponent());
     program->assignUniform("specularExp", light.getSpecularExp());
 
-    auto txt = program->assignAttributLocationShaderParam("textCoord", 2,
-                                                          polygon.getTextureCoordinates());
+    auto txt = program->assignAttribute(polygon.getKey(), "textCoord", 2,
+                                        polygon.getTextureCoordinates());
 
 
     program->assignUniform("xPixelOffset", (float) (1.0 / shadowMap->getWidth()));
@@ -50,6 +52,10 @@ void OpenGlSceneRenderer::render(Polygon &polygon) {
 
     std::vector<Texture *> textures = polygon.getTextures();
 
+    position.enable();
+    txt.enable();
+    norm.enable();
+
     for (int i = 0; i < textures.size(); i++) {
 
         textures[i]->bindToUnit(GL_TEXTURE0);
@@ -61,9 +67,9 @@ void OpenGlSceneRenderer::render(Polygon &polygon) {
 
     }
 
-    glDisableVertexAttribArray(position);
-    glDisableVertexAttribArray(txt);
-    glDisableVertexAttribArray(norm);
+    position.disable();
+    txt.disable();
+    norm.disable();
 
 }
 
@@ -89,11 +95,13 @@ void OpenGlSceneRenderer::render(Plane &plane) {
     Program *program = getPolygonProgram();
     program->use();
 
-    auto position = program->assignAttributLocationShaderParam("vert", 3, plane.getVerticies());
+    auto position = program->assignAttribute(plane.getKey(), "vert", 3,
+                                             plane.getVerticies());
     auto model = plane.getTransformation().modelMatrix();
     auto modelView = view * model;
     auto modelViewProjection = projection * modelView;
-    auto norm = program->assignAttributLocationShaderParam("vertNormal", 3, plane.getNormals());
+    auto norm = program->assignAttribute(plane.getKey(), "vertNormal", 3,
+                                         plane.getNormals());
 
     program->assignUniform("modelView", modelView);
     program->assignUniform("modelViewProjection", modelViewProjection);
@@ -106,8 +114,8 @@ void OpenGlSceneRenderer::render(Plane &plane) {
     program->assignUniform("ambient", light.getAmbientComponent());
     program->assignUniform("specularExp", light.getSpecularExp());
 
-    auto txt = program->assignAttributLocationShaderParam("textCoord", 2,
-                                                          plane.getTextureCoordinates());
+    auto txt = program->assignAttribute(plane.getKey(), "textCoord", 2,
+                                        plane.getTextureCoordinates());
 
     program->assignUniform("xPixelOffset", (float) (1.0 / shadowMap->getWidth()));
     program->assignUniform("yPixelOffset", (float) (1.0 / shadowMap->getHeight()));
@@ -122,11 +130,15 @@ void OpenGlSceneRenderer::render(Plane &plane) {
 
     shadowMap->getTexture().bindToUnit(GL_TEXTURE1);
 
+    position.enable();
+    txt.enable();
+    norm.enable();
+
     glDrawArrays(GL_TRIANGLE_STRIP, 0, plane.getVerticies().size() / 3);
 
-    glDisableVertexAttribArray(position);
-    glDisableVertexAttribArray(txt);
-    glDisableVertexAttribArray(norm);
+    position.disable();
+    txt.disable();
+    norm.disable();
 
 }
 
@@ -134,16 +146,18 @@ void OpenGlSceneRenderer::render(Point &point) {
     Program *program = getPointProgram();
     program->use();
 
-    auto position = program->assignAttributLocationShaderParam("vert", 3, point.getVerticies());
+    auto position = program->assignAttribute(point.getKey(), "vert", 3,
+                                             point.getVerticies());
     auto model = point.getTransformation().modelMatrix();
     auto modelView = view * model;
     auto modelViewProjection = projection * modelView;
 
     program->assignUniform("modelViewProjection", modelViewProjection);
+
+    position.enable();
     glDrawArrays(GL_POINTS, 0, 1);
 
-    glDisableVertexAttribArray(position);
-
+    position.disable();
 
 }
 

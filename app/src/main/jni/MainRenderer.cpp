@@ -43,7 +43,7 @@ MainRenderer::MainRenderer(AssetsReader &read) : reader(read) {
     dice2->addTexture(diceTextures);
     dice3->addTexture(diceTextures);
 
-    Plane *plane = new Plane(24, 12);
+    Plane *plane = new Plane(18, 10);
     plane->getTransformation().builder().translationY(-3.0f).buildAsSRT();
 
     plane->addTexture(Texture::instance(reader.readPng("poker_table.png")));
@@ -51,13 +51,12 @@ MainRenderer::MainRenderer(AssetsReader &read) : reader(read) {
     shapes[DICE_1] = dice1;
     shapes[DICE_2] = dice2;
     shapes[DICE_3] = dice3;
-
     shapes[PLANE] = plane;
+
     shapes[POINT] = new Point();
 
     camera.setViewAtY(6.f);
 }
-
 
 
 void MainRenderer::onViewChanged(int width, int height) {
@@ -71,10 +70,6 @@ void MainRenderer::onViewChanged(int width, int height) {
     float coefficient = 1.1f;
     shadowMapProjection = glm::frustum(-coefficient * ratio, coefficient * ratio,
                                        -coefficient * 1.f, coefficient * 1.f, 1.f, 100.f);
-
-    if (shadowMap != nullptr) {
-        delete shadowMap;
-    }
 
     shadowMap = new ShadowMap(width, height);
 }
@@ -178,10 +173,7 @@ MainRenderer::~MainRenderer() {
 
     shapes.clear();
 
-    if (shadowMap != nullptr) {
-        delete shadowMap;
-    }
-
+    delete shadowMap;
     delete sceneRenderer;
     delete shadowMapRenderer;
 }
