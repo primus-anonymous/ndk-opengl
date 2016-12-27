@@ -1,11 +1,11 @@
 #include <jni.h>
-#include "MainRenderer.h"
+#include "Main.h"
 
 
 extern "C" {
 
 
-MainRenderer *mainRenderer;
+Main *mainRenderer;
 
 
 JNIEXPORT void JNICALL
@@ -26,7 +26,7 @@ Java_com_neocaptainnemo_ndk_graphics_OpenGlJni_onSurfaceCreated(JNIEnv *env, job
     AAssetManager *mgr = AAssetManager_fromJava(env, assets);
 
     AssetsReader reader(mgr);
-    mainRenderer = new MainRenderer(reader);
+    mainRenderer = new Main(reader);
 }
 
 

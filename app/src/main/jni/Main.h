@@ -4,21 +4,23 @@
 #include <GLES2/gl2.h>
 #include <camera/Camera.h>
 #include <shadow/ShadowMap.h>
-#include <opengl/IRenderer.h>
-#include <opengl/OpenGlShadowMapRenderer.h>
-#include <opengl/OpenGlSceneRenderer.h>
 #include <map>
+#include <texture/AssetsReader.h>
+#include <shape/BaseShape.h>
+#include <light/Light.h>
+#include <renderer/OpenGlShadowMapRenderer.h>
+#include <renderer/OpenGlSceneRenderer.h>
 
-class MainRenderer {
+class Main {
 public:
 
-    MainRenderer(AssetsReader &reader);
+    Main(AssetsReader &reader);
 
     void onViewChanged(int w, int h);
 
     void onRender();
 
-    ~MainRenderer();
+    ~Main();
 
     void onSwipedLeft();
 

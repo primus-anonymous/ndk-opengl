@@ -1,14 +1,13 @@
-#include <opengl/OpenGlSceneRenderer.h>
-#include "MainRenderer.h"
+#include "Main.h"
 
-const std::string MainRenderer::DICE_1 = "DICE_1";
-const std::string MainRenderer::DICE_2 = "DICE_2";
-const std::string MainRenderer::DICE_3 = "DICE_3";
+const std::string Main::DICE_1 = "DICE_1";
+const std::string Main::DICE_2 = "DICE_2";
+const std::string Main::DICE_3 = "DICE_3";
 
-const std::string MainRenderer::PLANE = "PLANE";
-const std::string MainRenderer::POINT = "POINT";
+const std::string Main::PLANE = "PLANE";
+const std::string Main::POINT = "POINT";
 
-MainRenderer::MainRenderer(AssetsReader &read) : reader(read) {
+Main::Main(AssetsReader &read) : reader(read) {
 
     glEnable(GL_DEPTH_TEST);
 
@@ -59,7 +58,7 @@ MainRenderer::MainRenderer(AssetsReader &read) : reader(read) {
 }
 
 
-void MainRenderer::onViewChanged(int width, int height) {
+void Main::onViewChanged(int width, int height) {
 
     this->width = width;
     this->height = height;
@@ -74,7 +73,7 @@ void MainRenderer::onViewChanged(int width, int height) {
     shadowMap = new ShadowMap(width, height);
 }
 
-void MainRenderer::onRender() {
+void Main::onRender() {
 
     float rotation = shapes[DICE_1]->getTransformation().getRotationY() + 0.020f;
     if (rotation > 360.f) {
@@ -165,7 +164,7 @@ void MainRenderer::onRender() {
     }
 }
 
-MainRenderer::~MainRenderer() {
+Main::~Main() {
 
     for (auto iterator = shapes.begin(); iterator != shapes.end(); iterator++) {
         delete iterator->second;
@@ -178,27 +177,27 @@ MainRenderer::~MainRenderer() {
     delete shadowMapRenderer;
 }
 
-void MainRenderer::onSwipedLeft() {
+void Main::onSwipedLeft() {
     camera.setViewAtX(camera.getViewAtX() + cameraStep);
 }
 
-void MainRenderer::onSwipedRight() {
+void Main::onSwipedRight() {
     camera.setViewAtX(camera.getViewAtX() - cameraStep);
 }
 
-void MainRenderer::onSwipedBottom() {
+void Main::onSwipedBottom() {
     camera.setViewAtY(camera.getViewAtY() + cameraStep);
 }
 
-void MainRenderer::onSwipedTop() {
+void Main::onSwipedTop() {
     camera.setViewAtY(camera.getViewAtY() - cameraStep);
 }
 
-void MainRenderer::onZoomedIn() {
+void Main::onZoomedIn() {
     camera.setViewAtZ(camera.getViewAtZ() - cameraStep);
 }
 
-void MainRenderer::onZoomedOut() {
+void Main::onZoomedOut() {
     camera.setViewAtZ(camera.getViewAtZ() + cameraStep);
 }
 
